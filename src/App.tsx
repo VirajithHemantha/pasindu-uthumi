@@ -4,13 +4,64 @@ import { Sparkles, MapPin, Calendar, Clock } from "lucide-react";
 
 /**
  * Premium Sri Lankan Wedding Invitation Theme
- * Names: Naween & Nadeesha
+ * Names: Denuwan & Subodha
  * Background: Cream/Sand
  * Accents: Green/Brown
  */
 
 const mandalaImage = "/images/mandala_gold.png";
 const brideGroomImage = "/images/10.png";
+
+const INVITE = {
+  couple: {
+    first: "Denuwan",
+    second: "Subodha",
+    display: "Denuwan & Subodha",
+    displayUpper: "DENUWAN & SUBODHA",
+    monogram: "D&S",
+  },
+  hero: {
+    saveTheDateMonth: "SEPTEMBER 05, 2026",
+    dateLabel: "05 SEPTEMBER 2026",
+    locationLabel: "Colombo, Sri Lanka",
+  },
+  details: {
+    dayMonthLabel: "SATURDAY, 05 SEPTEMBER",
+    yearLabel: "2026",
+    startTimeLabel: "10:30 AM",
+    endTimeLabel: "04:30 PM",
+    poruwaTimeLabel: "10:12 AM",
+    countdownTarget: "September 05, 2026 10:12:00",
+  },
+  bride: {
+    name: "Subodha",
+    parentsLine1: "Mr. R. M. Sunil Jayawardena",
+    parentsLine2: "Mrs. H. D. Nayana Jayawardena",
+  },
+  groom: {
+    name: "Denuwan",
+    parentsLine1: "Mr. A. P. Dinesh Perera",
+    parentsLine2: "Mrs. S. R. Malithi Perera",
+  },
+  venue: {
+    name: "Lotus Grand Ballroom",
+    addressLine1: "Colombo 03,",
+    addressLine2: "Sri Lanka.",
+    blurb:
+      "We can’t wait to celebrate together in an evening filled with love, music, and unforgettable memories.",
+    directionsUrl:
+      "https://www.google.com/maps/search/?api=1&query=Lotus%20Grand%20Ballroom%2C%20Colombo%2003%2C%20Sri%20Lanka",
+    mapEmbedUrl:
+      "https://maps.google.com/maps?q=Lotus%20Grand%20Ballroom,%20Colombo%2003,%20Sri%20Lanka&t=&z=14&ie=UTF8&iwloc=&output=embed",
+  },
+  rsvpByLabel: "the end of August",
+  footer: {
+    year: "2026",
+    contactName: "Subodha",
+    contactPhoneHref: "0771234567",
+    contactPhoneLabel: "077 123 4567",
+  },
+} as const;
 
 type InviteImageProps = React.ComponentProps<"img"> & {
   eager?: boolean;
@@ -139,7 +190,7 @@ function FloatingPetals({ disabled = false }: { disabled?: boolean }) {
 }
 
 function CountdownTimer() {
-  const targetDate = new Date("June 12, 2026 10:17:00").getTime();
+  const targetDate = new Date(INVITE.details.countdownTarget).getTime();
   const [timeLeft, setTimeLeft] = useState(targetDate - Date.now());
 
   React.useEffect(() => {
@@ -260,9 +311,9 @@ export default function WeddingInvitation() {
                 Save the Date
               </span>
               <h1 className="font-cinzel text-4xl md:text-5xl text-stone-800 mb-4 tracking-tight">
-                Nimmi & Rishan
+                {INVITE.couple.display}
               </h1>
-              <p className="text-stone-500 text-sm tracking-[0.2em] font-light">JUNE 12, 2026</p>
+              <p className="text-stone-500 text-sm tracking-[0.2em] font-light">{INVITE.hero.saveTheDateMonth}</p>
             </motion.div>
 
             {/* Gatefold Envelope */}
@@ -308,7 +359,7 @@ export default function WeddingInvitation() {
                 />
 
                 <div className="text-theme-100/35 rotate-90 whitespace-nowrap text-xs tracking-[0.55em] uppercase font-bold relative z-10">
-                  NIMMI & RISHAN
+                  {INVITE.couple.displayUpper}
                 </div>
               </motion.div>
 
@@ -344,7 +395,7 @@ export default function WeddingInvitation() {
                 <div className="absolute inset-1.5 rounded-full border border-theme-400/50" />
                 <div className="absolute inset-3 rounded-full border border-theme-500/30" />
                 <div className="text-center relative z-10">
-                  <p className="font-cinzel text-[1.7rem] font-bold text-stone-800 leading-none">N&R</p>
+                  <p className="font-cinzel text-[1.7rem] font-bold text-stone-800 leading-none">{INVITE.couple.monogram}</p>
                   <div className="h-px w-12 bg-stone-400 mx-auto my-1.5" />
                   <p className="text-[8px] uppercase tracking-[0.35em] font-bold text-stone-600">Open</p>
                 </div>
@@ -395,7 +446,7 @@ export default function WeddingInvitation() {
                 transition={{ duration: 2, ease: "easeOut" }}
                 className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 font-cinzel text-[40vw] text-theme-900 pointer-events-none whitespace-nowrap leading-none select-none z-0"
               >
-                N&R
+                {INVITE.couple.monogram}
               </motion.div>
 
               {/* Central Premium Arch Card */}
@@ -436,7 +487,7 @@ export default function WeddingInvitation() {
                       transition={{ delay: 1, duration: 0.8 }}
                       className="font-playball text-[3rem] sm:text-[3.5rem] md:text-[5rem] text-stone-800 leading-[1.1] drop-shadow-sm"
                     >
-                      Nimmi
+                      {INVITE.couple.first}
                     </motion.h1>
                     <motion.div
                       initial={{ scale: 0 }}
@@ -452,7 +503,7 @@ export default function WeddingInvitation() {
                       transition={{ delay: 1.4, duration: 0.8 }}
                       className="font-playball text-[3rem] sm:text-[3.5rem] md:text-[5rem] text-stone-800 leading-[1.1] drop-shadow-sm"
                     >
-                      Rishan
+                      {INVITE.couple.second}
                     </motion.h1>
                   </div>
 
@@ -468,8 +519,8 @@ export default function WeddingInvitation() {
                       <div className="h-px w-full bg-gradient-to-l from-transparent via-theme-300 to-theme-400" />
                     </div>
                     <div className="font-cinzel space-y-1">
-                      <p className="text-sm md:text-base text-stone-700 tracking-[0.2em] md:tracking-[0.3em] font-bold">12 JUNE 2026</p>
-                      <p className="text-[8px] md:text-[9px] text-theme-600 tracking-[0.2em] uppercase font-bold">Palenda, Sri Lanka</p>
+                      <p className="text-sm md:text-base text-stone-700 tracking-[0.2em] md:tracking-[0.3em] font-bold">{INVITE.hero.dateLabel}</p>
+                      <p className="text-[8px] md:text-[9px] text-theme-600 tracking-[0.2em] uppercase font-bold">{INVITE.hero.locationLabel}</p>
                     </div>
                   </motion.div>
                 </div>
@@ -541,7 +592,7 @@ export default function WeddingInvitation() {
 
                 <div className="relative w-full flex flex-col md:flex-row items-center justify-center md:items-stretch gap-6 md:gap-10 my-12 md:my-20 z-10 px-2 lg:px-8">
 
-                  {/* Nimmi's Card */}
+                  {/* Bride's Card */}
                   <motion.div
                     initial={{ opacity: 0, x: -30, y: 20 }}
                     whileInView={{ opacity: 1, x: 0, y: 0 }}
@@ -553,9 +604,12 @@ export default function WeddingInvitation() {
                     <div className="relative z-10 space-y-4 py-8 md:py-12">
                       <div className="space-y-2">
                         <p className="text-[7px] md:text-[8px] uppercase tracking-[0.4em] font-bold text-stone-400">Beloved daughter of</p>
-                        <p className="text-xs md:text-sm font-cinzel text-stone-600 tracking-wide leading-relaxed">Mr. G. Gamunu Nimal Kumaratunga<br />& Mrs. T. M. Nayomi Priyangika</p>
+                        <p className="text-xs md:text-sm font-cinzel text-stone-600 tracking-wide leading-relaxed">
+                          {INVITE.bride.parentsLine1}
+                          <br />& {INVITE.bride.parentsLine2}
+                        </p>
                       </div>
-                      <h3 className="text-5xl md:text-7xl font-playball text-theme-800 group-hover:scale-110 transition-transform duration-700 pt-6 drop-shadow-sm">Nimmi</h3>
+                      <h3 className="text-5xl md:text-7xl font-playball text-theme-800 group-hover:scale-110 transition-transform duration-700 pt-6 drop-shadow-sm">{INVITE.bride.name}</h3>
                     </div>
                   </motion.div>
 
@@ -574,7 +628,7 @@ export default function WeddingInvitation() {
                     <div className="hidden md:block w-px h-32 bg-gradient-to-b from-theme-300 to-transparent" />
                   </div>
 
-                  {/* Rishan's Card - Offset structurally on desktop */}
+                  {/* Groom's Card - Offset structurally on desktop */}
                   <motion.div
                     initial={{ opacity: 0, x: 30, y: 20 }}
                     whileInView={{ opacity: 1, x: 0, y: 0 }}
@@ -587,9 +641,12 @@ export default function WeddingInvitation() {
                     <div className="relative z-10 space-y-4 py-8 md:py-12">
                       <div className="space-y-2">
                         <p className="text-[7px] md:text-[8px] uppercase tracking-[0.4em] font-bold text-stone-400">Beloved son of</p>
-                        <p className="text-xs md:text-sm font-cinzel text-stone-600 tracking-wide leading-relaxed">Mr. M. Lalith Kumara<br />& Mrs. G. V. Champika Deepani</p>
+                        <p className="text-xs md:text-sm font-cinzel text-stone-600 tracking-wide leading-relaxed">
+                          {INVITE.groom.parentsLine1}
+                          <br />& {INVITE.groom.parentsLine2}
+                        </p>
                       </div>
-                      <h3 className="text-5xl md:text-7xl font-playball text-theme-800 group-hover:scale-110 transition-transform duration-700 pt-6 drop-shadow-sm">Rishan</h3>
+                      <h3 className="text-5xl md:text-7xl font-playball text-theme-800 group-hover:scale-110 transition-transform duration-700 pt-6 drop-shadow-sm">{INVITE.groom.name}</h3>
                     </div>
                   </motion.div>
                 </div>
@@ -607,8 +664,8 @@ export default function WeddingInvitation() {
                     <div className="flex flex-col items-center flex-1">
                       <Calendar className="w-6 h-6 md:w-8 md:h-8 text-theme-500 mb-4 opacity-80" />
                       <p className="text-[9px] md:text-[10px] uppercase tracking-[0.3em] md:tracking-[0.4em] text-stone-400 font-bold mb-3">The Date</p>
-                      <p className="font-cinzel text-xl md:text-3xl text-theme-900 tracking-widest font-bold whitespace-nowrap">FRIDAY, 12 JUNE</p>
-                      <p className="font-cinzel text-lg md:text-xl text-theme-600 tracking-[0.3em] font-normal mt-2">2026</p>
+                      <p className="font-cinzel text-xl md:text-3xl text-theme-900 tracking-widest font-bold whitespace-nowrap">{INVITE.details.dayMonthLabel}</p>
+                      <p className="font-cinzel text-lg md:text-xl text-theme-600 tracking-[0.3em] font-normal mt-2">{INVITE.details.yearLabel}</p>
                     </div>
 
                     <div className="hidden md:flex flex-col items-center gap-3">
@@ -626,8 +683,8 @@ export default function WeddingInvitation() {
                     <div className="flex flex-col items-center flex-1">
                       <Clock className="w-6 h-6 md:w-8 md:h-8 text-theme-500 mb-4 opacity-80" />
                       <p className="text-[9px] md:text-[10px] uppercase tracking-[0.3em] md:tracking-[0.4em] text-stone-400 font-bold mb-3">The Time</p>
-                      <p className="font-cinzel text-xl md:text-3xl text-theme-900 tracking-widest font-bold whitespace-nowrap">10:30 AM</p>
-                      <p className="font-cinzel text-xs md:text-sm text-theme-600 tracking-[0.2em] mt-3 uppercase">To 04:30 PM</p>
+                      <p className="font-cinzel text-xl md:text-3xl text-theme-900 tracking-widest font-bold whitespace-nowrap">{INVITE.details.startTimeLabel}</p>
+                      <p className="font-cinzel text-xs md:text-sm text-theme-600 tracking-[0.2em] mt-3 uppercase">To {INVITE.details.endTimeLabel}</p>
                     </div>
                   </div>
 
@@ -636,7 +693,7 @@ export default function WeddingInvitation() {
                       <div className="absolute inset-0 bg-theme-100 blur-lg opacity-40 group-hover:opacity-60 transition-opacity" />
                       <p className="relative text-theme-800 bg-white shadow-[0_4px_20px_-5px_rgba(0,0,0,0.05)] text-[9px] md:text-[11px] font-bold tracking-[0.3em] md:tracking-[0.4em] uppercase px-6 lg:px-10 py-4 lg:py-5 rounded-full border border-theme-200 flex items-center justify-center gap-4 w-full md:w-auto">
                         <span className="w-1.5 h-1.5 rotate-45 bg-theme-500 shrink-0" />
-                        <span className="whitespace-nowrap">Poruwa Ceremony at 10:17 AM</span>
+                        <span className="whitespace-nowrap">Poruwa Ceremony at {INVITE.details.poruwaTimeLabel}</span>
                         <span className="w-1.5 h-1.5 rotate-45 bg-theme-500 shrink-0" />
                       </p>
                     </div>
@@ -704,7 +761,7 @@ export default function WeddingInvitation() {
                         <span className="text-theme-600 font-bold uppercase tracking-[0.4em] text-[9px] md:text-[11px]">The Venue</span>
                       </div>
                       <h2 className="font-playball text-[3.5rem] sm:text-[4rem] md:text-[5.5rem] text-theme-900 leading-[1] drop-shadow-sm ml-[-4px]">
-                        SUEEN Nature Hotel
+                        {INVITE.venue.name}
                       </h2>
                     </div>
 
@@ -716,18 +773,18 @@ export default function WeddingInvitation() {
                           <MapPin className="w-4 h-4 text-theme-500" />
                         </div>
                         <p className="text-lg md:text-xl text-stone-700 font-cinzel font-medium leading-relaxed tracking-wide">
-                          Baduraliya, Palenda,<br /> Sri Lanka.
+                          {INVITE.venue.addressLine1}<br /> {INVITE.venue.addressLine2}
                         </p>
                       </div>
 
                       <div className="pl-8 space-y-4 pt-4 text-stone-500 text-sm md:text-base tracking-wide font-light leading-relaxed">
-                        We look forward to welcoming you to this beautiful sanctuary to celebrate our special day amidst nature's elegance.
+                        {INVITE.venue.blurb}
                       </div>
                     </div>
 
                     <div className="pt-8 w-full md:w-auto">
                       <button
-                        onClick={() => window.open('https://maps.app.goo.gl/9mGfLwJQ9srnPdev6', '_blank')}
+                        onClick={() => window.open(INVITE.venue.directionsUrl, '_blank')}
                         className="w-full md:w-auto flex items-center justify-center gap-4 bg-theme-800 text-white px-10 py-5 rounded-full font-bold uppercase tracking-[0.2em] text-[10px] md:text-xs hover:bg-theme-900 hover:shadow-xl hover:shadow-theme-900/20 transition-all duration-300 group"
                       >
                         <MapPin className="w-4 h-4 group-hover:-translate-y-1 transition-transform duration-300" />
@@ -748,7 +805,7 @@ export default function WeddingInvitation() {
                     {/* The Maps iframe */}
                     <div className="absolute inset-0 w-full h-full scale-[1.2] group-hover:scale-[1.15] transition-transform duration-[2s]">
                       <iframe
-                        src="https://maps.google.com/maps?q=Sueen%20Nature,%20Palenda,%20Baduraliya,%20Sri%20Lanka&t=&z=14&ie=UTF8&iwloc=&output=embed"
+                        src={INVITE.venue.mapEmbedUrl}
                         width="100%"
                         height="100%"
                         style={{ border: 0 }}
@@ -793,7 +850,7 @@ export default function WeddingInvitation() {
                     <div className="h-px w-16 md:w-24 bg-gradient-to-l from-transparent to-theme-300" />
                   </div>
                   <p className="text-stone-300 text-sm md:text-base max-w-md mx-auto leading-relaxed mb-16 tracking-wide font-light">
-                    We would be absolutely thrilled to celebrate with you. Kindly respond by the end of March.
+                    We would be absolutely thrilled to celebrate with you. Kindly respond by {INVITE.rsvpByLabel}.
                   </p>
 
                   {/* Premium RSVP Form */}
@@ -914,7 +971,7 @@ export default function WeddingInvitation() {
                         Thank You
                       </div>
                       <p className="text-[9px] md:text-[11px] uppercase tracking-[0.8em] text-theme-600 font-bold relative z-10 bg-[#fdfaf5] px-6 py-2 rounded-full border border-theme-100/50 shadow-sm">With Love</p>
-                      <h3 className="font-playball text-[3.2rem] sm:text-6xl md:text-8xl text-theme-900 relative z-10 drop-shadow-sm px-4 pt-4 leading-none">Nimmi & Rishan</h3>
+                      <h3 className="font-playball text-[3.2rem] sm:text-6xl md:text-8xl text-theme-900 relative z-10 drop-shadow-sm px-4 pt-4 leading-none">{INVITE.couple.display}</h3>
 
                       <motion.img
                         initial={{ opacity: 0, y: 24, scale: 0.95 }}
@@ -933,10 +990,16 @@ export default function WeddingInvitation() {
               {/* Footer */}
               <footer className="py-12 border-t border-theme-200/30 text-center relative z-10 space-y-3">
                 <p className="text-[8px] md:text-[10px] uppercase tracking-[0.5em] text-stone-400 font-bold">
-                  © 2026 Nimmi & Rishan. <span className="hidden md:inline">|</span><br className="md:hidden block mt-2" /> All rights reserved.
+                  © {INVITE.footer.year} {INVITE.couple.display}. <span className="hidden md:inline">|</span><br className="md:hidden block mt-2" /> All rights reserved.
                 </p>
                 <p className="text-[8px] md:text-[10px] tracking-[0.3em] text-stone-400">
-                  Contact: <a href="tel:0716613988" className="text-theme-600 font-bold hover:text-theme-800 transition-colors">Nimmi – 071 6613988</a>
+                  Contact:{" "}
+                  <a
+                    href={`tel:${INVITE.footer.contactPhoneHref}`}
+                    className="text-theme-600 font-bold hover:text-theme-800 transition-colors"
+                  >
+                    {INVITE.footer.contactName} – {INVITE.footer.contactPhoneLabel}
+                  </a>
                 </p>
               </footer>
             </div>
