@@ -252,6 +252,7 @@ function CountdownTimer() {
 export default function WeddingInvitation() {
   const [isOpened, setIsOpened] = useState(false);
   const [isLowPerformanceMode, setIsLowPerformanceMode] = useState(false);
+  const [arePetalsDisabled, setArePetalsDisabled] = useState(false);
 
   useEffect(() => {
     const motionMedia = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -270,6 +271,8 @@ export default function WeddingInvitation() {
       const lowMemory = typeof getDeviceMemory() === "number" && getDeviceMemory()! <= 4;
       const smallScreen = window.innerWidth < 768;
       setIsLowPerformanceMode(motionMedia.matches || constrainedNetwork || lowMemory || smallScreen);
+      // Keep petals enabled on mobile, but still respect reduced-motion and severe constraints.
+      setArePetalsDisabled(motionMedia.matches || constrainedNetwork || lowMemory);
     };
 
     updatePerformanceMode();
@@ -290,7 +293,7 @@ export default function WeddingInvitation() {
         } relative font-montserrat scroll-smooth`}
     >
       <MandalaFrame minimal={isLowPerformanceMode} />
-      <FloatingPetals disabled={isLowPerformanceMode} />
+      <FloatingPetals disabled={arePetalsDisabled} />
 
       <AnimatePresence mode="wait">
         {!isOpened ? (
