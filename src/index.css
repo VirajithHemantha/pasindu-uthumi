@@ -1,26 +1,26 @@
 @import "tailwindcss";
 
 @theme {
-  --font-serif: "Cormorant Garamond", serif;
-  --font-script: "Great Vibes", cursive;
-  --font-sans: "Inter", sans-serif;
-  --font-cinzel: "Cinzel", serif;
-  --font-montserrat: "Montserrat", sans-serif;
-  --font-playball: "Playball", cursive;
+  --font-serif: "Cormorant Garamond", "Abhaya Libre", serif;
+  --font-script: "Great Vibes", "Abhaya Libre", cursive;
+  --font-sans: "Inter", "Abhaya Libre", sans-serif;
+  --font-cinzel: "Cinzel", "Abhaya Libre", serif;
+  --font-montserrat: "Montserrat", "Abhaya Libre", sans-serif;
+  --font-playball: "Playball", "Abhaya Libre", cursive;
 
-  --color-sage: #f3a7cd;
-  --color-paper: #FDFBF7;
+  --color-sage: #c93e37;
+  --color-paper: #f1ffe3;
 
-  --color-theme-50: #fdf7fb;
-  --color-theme-100: #f8eaf3;
-  --color-theme-200: #f1d6e8;
-  --color-theme-300: #e8bdd9;
-  --color-theme-400: #dd9ec8;
-  --color-theme-500: #f3a7cd;
-  --color-theme-600: #bc5f99;
-  --color-theme-700: #9f4c80;
-  --color-theme-800: #833f69;
-  --color-theme-900: #6c3557;
+  --color-theme-50: #fcf4f3;
+  --color-theme-100: #f8e5e4;
+  --color-theme-200: #f3ccca;
+  --color-theme-300: #eaada9;
+  --color-theme-400: #df847f;
+  --color-theme-500: #c93e37;
+  --color-theme-600: #ba322c;
+  --color-theme-700: #9b2823;
+  --color-theme-800: #812521;
+  --color-theme-900: #6b2420;
 }
 
 :root {
