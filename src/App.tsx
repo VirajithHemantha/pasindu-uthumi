@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Sparkles, MapPin, Calendar, Clock } from "lucide-react";
+import { Sparkles, MapPin, Calendar, Clock, Volume2, VolumeX } from "lucide-react";
 
 /**
  * Premium Sri Lankan Wedding Invitation Theme
@@ -206,10 +206,10 @@ function CountdownTimer() {
   const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
 
   const stats = [
-    { label: "Days", value: days },
-    { label: "Hours", value: hours },
-    { label: "Minutes", value: minutes },
-    { label: "Seconds", value: seconds },
+    { label: "දින", value: days },
+    { label: "පැය", value: hours },
+    { label: "මිනිත්තු", value: minutes },
+    { label: "තත්පර", value: seconds },
   ];
 
   return (
@@ -254,6 +254,74 @@ export default function WeddingInvitation() {
   const [isLowPerformanceMode, setIsLowPerformanceMode] = useState(false);
   const [arePetalsDisabled, setArePetalsDisabled] = useState(false);
 
+  const audioRef = useRef<HTMLAudioElement>(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+
+  const [rsvpForm, setRsvpForm] = useState({ name: "", attendance: "1" });
+  const [rsvpStatus, setRsvpStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+
+  const [wishForm, setWishForm] = useState({ name: "", message: "" });
+  const [wishStatus, setWishStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+
+  const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw7__PAz5lAAIYpdt6eV-xhMMI8G6vLzl4TSRFkuMW8a399B2wnB_iXw0o16FzLwnfn6A/exec";
+
+  const handleRsvpSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!rsvpForm.name) return;
+    setRsvpStatus("loading");
+    try {
+      await fetch(GOOGLE_SCRIPT_URL, {
+        method: "POST",
+        mode: "no-cors",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ type: "rsvp", ...rsvpForm }),
+      });
+      setRsvpStatus("success");
+      setRsvpForm({ name: "", attendance: "1" });
+      setTimeout(() => setRsvpStatus("idle"), 3000);
+    } catch (error) {
+      setRsvpStatus("error");
+      setTimeout(() => setRsvpStatus("idle"), 3000);
+    }
+  };
+
+  const handleWishSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!wishForm.name || !wishForm.message) return;
+    setWishStatus("loading");
+    try {
+      await fetch(GOOGLE_SCRIPT_URL, {
+        method: "POST",
+        mode: "no-cors",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ type: "wish", ...wishForm }),
+      });
+      setWishStatus("success");
+      setWishForm({ name: "", message: "" });
+      setTimeout(() => setWishStatus("idle"), 3000);
+    } catch (error) {
+      setWishStatus("error");
+      setTimeout(() => setWishStatus("idle"), 3000);
+    }
+  };
+
+  const toggleAudio = () => {
+    if (audioRef.current) {
+      if (isPlaying) {
+        audioRef.current.pause();
+      } else {
+        audioRef.current.play().catch(e => console.log("Audio play failed", e));
+      }
+      setIsPlaying(!isPlaying);
+    }
+  };
+
+  useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.play().then(() => setIsPlaying(true)).catch(() => console.log("Autoplay blocked by browser"));
+    }
+  }, []);
+
   useEffect(() => {
     const motionMedia = window.matchMedia("(prefers-reduced-motion: reduce)");
     const connection = (navigator as Navigator & {
@@ -292,6 +360,24 @@ export default function WeddingInvitation() {
       className={`h-[100dvh] w-full bg-[#fdfaf5] transition-all duration-1000 ${isOpened ? "overflow-y-auto overflow-x-hidden smooth-mobile-scroll" : "overflow-hidden flex items-center justify-center"
         } relative font-montserrat scroll-smooth`}
     >
+      {/* Audio Element */}
+      <audio ref={audioRef} src="/images/ssstik.io_1785347551134.mp3" loop autoPlay />
+      
+      {/* Global Music Toggle Button */}
+      <motion.button
+        initial={{ opacity: 0, x: -20 }}
+        animate={{ opacity: 1, x: 0 }}
+        onClick={toggleAudio}
+        className="fixed top-6 left-6 z-50 bg-white/80 backdrop-blur-md p-3 rounded-full shadow-lg border border-theme-100 text-theme-800 hover:bg-theme-50 transition-colors"
+      >
+        <div className="flex flex-col items-center">
+          {isPlaying ? <Volume2 className="w-5 h-5 mb-1" /> : <VolumeX className="w-5 h-5 mb-1" />}
+          <div className="text-[8px] uppercase tracking-widest font-bold text-center mt-1">
+            {isPlaying ? 'Pause' : 'Play'}
+          </div>
+        </div>
+      </motion.button>
+
       <MandalaFrame minimal={isLowPerformanceMode} />
       <FloatingPetals disabled={arePetalsDisabled} />
 
@@ -311,7 +397,7 @@ export default function WeddingInvitation() {
             {/* Title */}
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-10">
               <span className="inline-block px-5 py-2 rounded-full bg-theme-50 border border-theme-200 text-[10px] uppercase tracking-[0.5em] text-theme-700 font-bold mb-6">
-                Save the Date
+                දිනය වෙන්කරගන්න
               </span>
               <h1 className="font-cinzel text-4xl md:text-5xl text-stone-800 mb-4 tracking-tight">
                 {INVITE.couple.display}
@@ -322,7 +408,12 @@ export default function WeddingInvitation() {
             {/* Gatefold Envelope */}
             <div
               className="relative w-full max-w-[430px] aspect-[1/1.42] flex items-center justify-center group cursor-pointer perspective-1000"
-              onClick={() => setIsOpened(true)}
+              onClick={() => {
+                setIsOpened(true);
+                if (audioRef.current) {
+                  audioRef.current.play().then(() => setIsPlaying(true)).catch(() => console.log("Audio autoplay prevented"));
+                }
+              }}
             >
               <div className="absolute -inset-8 bg-[radial-gradient(circle,_rgba(243,167,205,0.35)_0%,_rgba(241,214,232,0.2)_45%,_transparent_75%)] blur-3xl opacity-90" />
               <div className="absolute inset-0 bg-gradient-to-b from-[#fffefb] via-[#fff9f2] to-[#fff6ee] rounded-[1.4rem] shadow-[0_28px_80px_-20px_rgba(82,38,66,0.35)] border border-theme-200/80 overflow-hidden" />
@@ -400,7 +491,7 @@ export default function WeddingInvitation() {
                 <div className="text-center relative z-10">
                   <p className="font-cinzel text-[1.7rem] font-bold text-stone-800 leading-none">{INVITE.couple.monogram}</p>
                   <div className="h-px w-12 bg-stone-400 mx-auto my-1.5" />
-                  <p className="text-[8px] uppercase tracking-[0.35em] font-bold text-stone-600">Open</p>
+                  <p className="text-[8px] uppercase tracking-[0.35em] font-bold text-stone-600">විවෘත කරන්න</p>
                 </div>
               </motion.div>
 
@@ -410,12 +501,12 @@ export default function WeddingInvitation() {
               </div>
 
               <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-40 text-[8px] uppercase tracking-[0.45em] text-theme-700/80 font-bold bg-white/70 backdrop-blur-md px-4 py-2 rounded-full border border-theme-200/80 shadow-sm">
-                Tap Seal To Open
+                විවෘත කිරීමට මුද්‍රාව ස්පර්ශ කරන්න
               </div>
             </div>
 
             <p className="mt-8 text-[11px] uppercase tracking-[0.6em] text-stone-400 font-bold animate-pulse">
-              Tap to Reveal
+              විවෘත කිරීමට ස්පර්ශ කරන්න
             </p>
           </motion.div>
         ) : (
@@ -429,11 +520,17 @@ export default function WeddingInvitation() {
             <motion.button
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
-              onClick={() => setIsOpened(false)}
+              onClick={() => {
+                setIsOpened(false);
+                if (audioRef.current && isPlaying) {
+                  audioRef.current.pause();
+                  setIsPlaying(false);
+                }
+              }}
               className="fixed top-6 right-6 z-50 bg-white/80 backdrop-blur-md p-3 rounded-full shadow-lg border border-theme-100 text-theme-800 hover:bg-theme-50 transition-colors"
             >
               <div className="flex flex-col items-center">
-                <div className="text-[8px] uppercase tracking-widest font-bold">Close</div>
+                <div className="text-[8px] uppercase tracking-widest font-bold">වසන්න</div>
               </div>
             </motion.button>
 
@@ -478,8 +575,8 @@ export default function WeddingInvitation() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.8, duration: 1 }}
                   >
-                    <span className="block text-[8px] md:text-[10px] uppercase tracking-[0.4em] md:tracking-[0.6em] text-theme-700 font-bold mb-2">
-                      Please join us
+                    <span className="block text-[12px] md:text-[14px] uppercase tracking-[0.4em] md:tracking-[0.6em] text-theme-700 font-bold mb-2">
+                      ආරාධනාවයි
                     </span>
                   </motion.div>
 
@@ -555,8 +652,16 @@ export default function WeddingInvitation() {
                   className="flex flex-col items-center mb-8 md:mb-16"
                 >
                   <div className="w-px h-16 md:h-24 bg-gradient-to-b from-transparent to-theme-400 mb-6 md:mb-10" />
-                  <p className="text-theme-700 text-[9px] md:text-[12px] tracking-[0.4em] md:tracking-[0.6em] uppercase font-bold text-center leading-loose">
-                    You are cordially invited to<br className="hidden md:block" /> celebrate the engagement of
+                  
+                  <div className="text-theme-800 text-sm md:text-base text-center leading-[2.2] mb-10 font-medium px-4 max-w-xl mx-auto">
+                    උතුම් ප්‍රාර්ථනා පොකුරු මල් හිත තියාන<br/>
+                    පසන් හැඟුම් එක් කොට බිඟු යුවල<br/>
+                    දෑගීලි බැදෙනා වසත් සම උයනට,<br/>
+                    ආදරෙන් ආරාධනා
+                  </div>
+
+                  <p className="text-theme-700 text-[12px] md:text-[14px] tracking-[0.4em] md:tracking-[0.6em] uppercase font-bold text-center leading-loose">
+                    මෙම ආදරණීය විවාහ ගිවිසගැනීමේ උත්සවයට<br className="hidden md:block" /> ආදරයෙන් ආරාධනා කරමු
                   </p>
                 </motion.div>
 
@@ -591,7 +696,7 @@ export default function WeddingInvitation() {
                     <div className="absolute inset-0 opacity-[0.02] paper-grain pointer-events-none" />
                     <div className="relative z-10 space-y-4 py-8 md:py-12">
                       <div className="space-y-2">
-                        <p className="text-[7px] md:text-[8px] uppercase tracking-[0.4em] font-bold text-stone-400">Beloved daughter of</p>
+                        <p className="text-[7px] md:text-[8px] uppercase tracking-[0.4em] font-bold text-stone-400">ආදරණීය දියණිය</p>
                         <p className="text-xs md:text-sm font-cinzel text-stone-600 tracking-wide leading-relaxed">
                           {INVITE.bride.parentsLine1}
                           <br />& {INVITE.bride.parentsLine2}
@@ -628,7 +733,7 @@ export default function WeddingInvitation() {
                     <div className="absolute inset-0 opacity-[0.02] paper-grain pointer-events-none" />
                     <div className="relative z-10 space-y-4 py-8 md:py-12">
                       <div className="space-y-2">
-                        <p className="text-[7px] md:text-[8px] uppercase tracking-[0.4em] font-bold text-stone-400">Beloved son of</p>
+                        <p className="text-[7px] md:text-[8px] uppercase tracking-[0.4em] font-bold text-stone-400">ආදරණීය පුත්‍රයා</p>
                         <p className="text-xs md:text-sm font-cinzel text-stone-600 tracking-wide leading-relaxed">
                           {INVITE.groom.parentsLine1}
                           <br />& {INVITE.groom.parentsLine2}
@@ -651,7 +756,7 @@ export default function WeddingInvitation() {
                   <div className="flex flex-col md:flex-row items-center justify-center gap-12 md:gap-32 text-center w-full max-w-4xl px-4">
                     <div className="flex flex-col items-center flex-1">
                       <Calendar className="w-6 h-6 md:w-8 md:h-8 text-theme-500 mb-4 opacity-80" />
-                      <p className="text-[9px] md:text-[10px] uppercase tracking-[0.3em] md:tracking-[0.4em] text-stone-400 font-bold mb-3">The Date</p>
+                      <p className="text-[9px] md:text-[10px] uppercase tracking-[0.3em] md:tracking-[0.4em] text-stone-400 font-bold mb-3">දිනය</p>
                       <p className="font-cinzel text-xl md:text-3xl text-theme-900 tracking-widest font-bold whitespace-nowrap">{INVITE.details.dayMonthLabel}</p>
                       <p className="font-cinzel text-lg md:text-xl text-theme-600 tracking-[0.3em] font-normal mt-2">{INVITE.details.yearLabel}</p>
                     </div>
@@ -670,9 +775,9 @@ export default function WeddingInvitation() {
 
                     <div className="flex flex-col items-center flex-1">
                       <Clock className="w-6 h-6 md:w-8 md:h-8 text-theme-500 mb-4 opacity-80" />
-                      <p className="text-[9px] md:text-[10px] uppercase tracking-[0.3em] md:tracking-[0.4em] text-stone-400 font-bold mb-3">The Time</p>
+                      <p className="text-[9px] md:text-[10px] uppercase tracking-[0.3em] md:tracking-[0.4em] text-stone-400 font-bold mb-3">වේලාව</p>
                       <p className="font-cinzel text-xl md:text-3xl text-theme-900 tracking-widest font-bold whitespace-nowrap">{INVITE.details.startTimeLabel}</p>
-                      <p className="font-cinzel text-xs md:text-sm text-theme-600 tracking-[0.2em] mt-3 uppercase">To {INVITE.details.endTimeLabel}</p>
+                      <p className="font-cinzel text-xs md:text-sm text-theme-600 tracking-[0.2em] mt-3 uppercase">{INVITE.details.endTimeLabel ? `දක්වා ${INVITE.details.endTimeLabel}` : ''}</p>
                     </div>
                   </div>
 
@@ -696,7 +801,7 @@ export default function WeddingInvitation() {
                 >
                   {/* Watermark text */}
                   <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 font-playball text-[12vw] md:text-[140px] text-theme-100/50 whitespace-nowrap pointer-events-none z-0 select-none">
-                    Forever
+                    සදහටම
                   </div>
 
                   <div className="flex items-center gap-4 md:gap-8 justify-center relative z-10 w-full mb-6 mt-4 opacity-70">
@@ -706,12 +811,12 @@ export default function WeddingInvitation() {
                   </div>
 
                   <h2 className="font-cinzel text-3xl md:text-5xl text-theme-900 mb-8 relative z-10 tracking-widest font-bold drop-shadow-sm px-4 leading-[1.4]">
-                    Wait for the <span className="font-playball text-theme-700 italic lowercase tracking-normal text-4xl md:text-7xl ml-2">magic</span>
+                    සුබ මොහොතට <span className="font-playball text-theme-700 italic lowercase tracking-normal text-4xl md:text-7xl ml-2">තවත්</span>
                   </h2>
 
                   <p className="text-[10px] md:text-[11px] uppercase tracking-[0.5em] text-theme-600 font-bold bg-white/80 backdrop-blur-sm px-8 py-3 rounded-full border border-theme-200/50 inline-flex items-center gap-3 shadow-[0_4px_15px_-5px_rgba(0,0,0,0.05)] relative z-10">
                     <span className="w-1 h-1 rounded-full bg-theme-400 animate-pulse" />
-                    Counting Down
+                    මොහොත ළංවෙමින්
                     <span className="w-1 h-1 rounded-full bg-theme-400 animate-pulse" />
                   </p>
                 </motion.div>
@@ -737,7 +842,7 @@ export default function WeddingInvitation() {
                     <div className="flex flex-col items-start gap-4">
                       <div className="flex items-center gap-4">
                         <div className="w-8 h-px bg-theme-400" />
-                        <span className="text-theme-600 font-bold uppercase tracking-[0.4em] text-[9px] md:text-[11px]">The Venue</span>
+                        <span className="text-theme-600 font-bold uppercase tracking-[0.4em] text-[9px] md:text-[11px]">උත්සව සභාව</span>
                       </div>
                       <h2 className="font-playball text-[3.5rem] sm:text-[4rem] md:text-[5.5rem] text-theme-900 leading-[1] drop-shadow-sm ml-[-4px]">
                         {INVITE.venue.name}
@@ -767,7 +872,7 @@ export default function WeddingInvitation() {
                         className="w-full md:w-auto flex items-center justify-center gap-4 bg-theme-800 text-white px-10 py-5 rounded-full font-bold uppercase tracking-[0.2em] text-[10px] md:text-xs hover:bg-theme-900 hover:shadow-xl hover:shadow-theme-900/20 transition-all duration-300 group"
                       >
                         <MapPin className="w-4 h-4 group-hover:-translate-y-1 transition-transform duration-300" />
-                        Get Directions
+                        ස්ථානයට යොමුව
                       </button>
                     </div>
                   </motion.div>
@@ -799,7 +904,7 @@ export default function WeddingInvitation() {
                     <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-white via-white/80 to-transparent h-32 pointer-events-none z-10 flex items-end justify-center pb-6">
                       <p className="text-[8px] uppercase tracking-widest text-stone-500 font-bold bg-white/90 px-5 py-2 rounded-full shadow-sm backdrop-blur-md inline-flex items-center gap-2">
                         <span className="w-1.5 h-1.5 rounded-full bg-theme-400 animate-pulse" />
-                        View on Map
+                        සිතියමෙන් බලන්න
                       </p>
                     </div>
                   </motion.div>
@@ -834,13 +939,17 @@ export default function WeddingInvitation() {
 
                   {/* Premium RSVP Form */}
                   <div className="w-full bg-white/5 backdrop-blur-md p-6 sm:p-8 md:p-12 rounded-[2rem] border border-white/10 shadow-[0_20px_50px_-10px_rgba(0,0,0,0.5)]">
-                    <form className="space-y-8 text-left" onSubmit={(e) => e.preventDefault()}>
+                    <form className="space-y-8 text-left" onSubmit={handleRsvpSubmit}>
                       <div className="space-y-3">
                         <label className="text-[8px] md:text-[10px] tracking-[0.2em] font-bold text-theme-200 ml-2">සම්පූර්ණ නම</label>
                         <input
                           type="text"
+                          required
+                          value={rsvpForm.name}
+                          onChange={(e) => setRsvpForm({ ...rsvpForm, name: e.target.value })}
+                          disabled={rsvpStatus === "loading"}
                           placeholder="ඔබේ නම"
-                          className="w-full bg-transparent border-b border-white/20 px-2 py-3 text-white placeholder:text-white/30 focus:outline-none focus:border-theme-300 transition-colors font-cinzel text-lg md:text-xl tracking-wide"
+                          className="w-full bg-transparent border-b border-white/20 px-2 py-3 text-white placeholder:text-white/30 focus:outline-none focus:border-theme-300 transition-colors font-cinzel text-lg md:text-xl tracking-wide disabled:opacity-50"
                         />
                       </div>
 
@@ -848,8 +957,10 @@ export default function WeddingInvitation() {
                         <label className="text-[8px] md:text-[10px] tracking-[0.2em] font-bold text-theme-200 ml-2">පැමිණෙන සංඛ්‍යාව</label>
                         <div className="relative">
                           <select
-                            defaultValue="1"
-                            className="w-full bg-transparent border-b border-white/20 px-2 py-3 text-white focus:outline-none focus:border-theme-300 transition-colors font-cinzel text-lg md:text-xl tracking-wide appearance-none cursor-pointer"
+                            value={rsvpForm.attendance}
+                            onChange={(e) => setRsvpForm({ ...rsvpForm, attendance: e.target.value })}
+                            disabled={rsvpStatus === "loading"}
+                            className="w-full bg-transparent border-b border-white/20 px-2 py-3 text-white focus:outline-none focus:border-theme-300 transition-colors font-cinzel text-lg md:text-xl tracking-wide appearance-none cursor-pointer disabled:opacity-50"
                           >
                             <option value="1" className="bg-[#2c2a26] text-white">1 අයෙකු පමණි</option>
                             <option value="2" className="bg-[#2c2a26] text-white">දෙදෙනෙකු</option>
@@ -863,21 +974,16 @@ export default function WeddingInvitation() {
                         </div>
                       </div>
 
-                      <div className="space-y-3">
-                        <label className="text-[8px] md:text-[10px] tracking-[0.2em] font-bold text-theme-200 ml-2">ආහාර පිළිබඳ විශේෂ සඳහන් කිරීම්</label>
-                        <input
-                          type="text"
-                          placeholder="නිර්මාංශ හෝ වෙනත්"
-                          className="w-full bg-transparent border-b border-white/20 px-2 py-3 text-white placeholder:text-white/30 focus:outline-none focus:border-theme-300 transition-colors font-cinzel text-lg md:text-xl tracking-wide"
-                        />
-                      </div>
+
 
                       <div className="pt-10">
                         <button
-                          className="w-full bg-theme-200 text-stone-900 py-5 rounded-full font-bold tracking-[0.2em] text-[10px] md:text-sm hover:bg-white hover:shadow-[0_0_30px_rgba(255,255,255,0.2)] transition-all duration-300 group inline-flex justify-center items-center gap-4"
+                          type="submit"
+                          disabled={rsvpStatus === "loading" || rsvpStatus === "success"}
+                          className="w-full bg-theme-200 text-stone-900 py-5 rounded-full font-bold tracking-[0.2em] text-[10px] md:text-sm hover:bg-white hover:shadow-[0_0_30px_rgba(255,255,255,0.2)] transition-all duration-300 group inline-flex justify-center items-center gap-4 disabled:opacity-70 disabled:cursor-not-allowed"
                         >
                           <span className="w-1.5 h-1.5 bg-stone-900 rotate-45 group-hover:scale-150 transition-transform" />
-                          තහවුරු කරන්න
+                          {rsvpStatus === "loading" ? "යවමින් පවතී..." : rsvpStatus === "success" ? "සාර්ථකයි!" : "තහවුරු කරන්න"}
                           <span className="w-1.5 h-1.5 bg-stone-900 rotate-45 group-hover:scale-150 transition-transform" />
                         </button>
                       </div>
@@ -918,27 +1024,39 @@ export default function WeddingInvitation() {
                       {/* Decorative internal lines */}
                       <div className="absolute inset-2 md:inset-4 border-[0.5px] border-theme-200/50 rounded-tr-[3.5rem] rounded-bl-[3.5rem] pointer-events-none transition-colors duration-700 group-hover:border-theme-300/80" />
 
-                      <form className="space-y-8 text-left relative z-10" onSubmit={(e) => e.preventDefault()}>
+                      <form className="space-y-8 text-left relative z-10" onSubmit={handleWishSubmit}>
                         <div className="space-y-3">
                           <label className="text-[7px] md:text-[9px] tracking-[0.2em] font-bold text-stone-400 ml-2">ඔබේ නම</label>
                           <input
                             type="text"
+                            required
+                            value={wishForm.name}
+                            onChange={(e) => setWishForm({ ...wishForm, name: e.target.value })}
+                            disabled={wishStatus === "loading"}
                             placeholder="ඔබේ නම"
-                            className="w-full bg-stone-50/50 border-b border-theme-200 px-4 py-4 text-theme-900 placeholder:text-stone-300 focus:outline-none focus:border-theme-400 focus:bg-white transition-all font-cinzel text-lg tracking-wide rounded-t-lg"
+                            className="w-full bg-stone-50/50 border-b border-theme-200 px-4 py-4 text-theme-900 placeholder:text-stone-300 focus:outline-none focus:border-theme-400 focus:bg-white transition-all font-cinzel text-lg tracking-wide rounded-t-lg disabled:opacity-50"
                           />
                         </div>
                         <div className="space-y-3">
                           <label className="text-[7px] md:text-[9px] tracking-[0.2em] font-bold text-stone-400 ml-2">ඔබේ පණිවිඩය</label>
                           <textarea
                             rows={4}
+                            required
+                            value={wishForm.message}
+                            onChange={(e) => setWishForm({ ...wishForm, message: e.target.value })}
+                            disabled={wishStatus === "loading"}
                             placeholder="සුබ පැතුම් එක් කරන්න..."
-                            className="w-full bg-stone-50/50 border-b border-theme-200 px-4 py-4 text-theme-900 placeholder:text-stone-300 focus:outline-none focus:border-theme-400 focus:bg-white transition-all font-cinzel text-lg tracking-wide resize-none rounded-t-lg"
+                            className="w-full bg-stone-50/50 border-b border-theme-200 px-4 py-4 text-theme-900 placeholder:text-stone-300 focus:outline-none focus:border-theme-400 focus:bg-white transition-all font-cinzel text-lg tracking-wide resize-none rounded-t-lg disabled:opacity-50"
                           />
                         </div>
                         <div className="pt-6 flex justify-center">
-                          <button className="bg-theme-800 text-white px-12 py-5 rounded-full font-bold tracking-[0.2em] text-[10px] hover:bg-theme-900 hover:shadow-xl hover:shadow-theme-900/20 transition-all duration-300 group/btn inline-flex items-center gap-4">
+                          <button 
+                            type="submit"
+                            disabled={wishStatus === "loading" || wishStatus === "success"}
+                            className="bg-theme-800 text-white px-12 py-5 rounded-full font-bold tracking-[0.2em] text-[10px] hover:bg-theme-900 hover:shadow-xl hover:shadow-theme-900/20 transition-all duration-300 group/btn inline-flex items-center gap-4 disabled:opacity-70 disabled:cursor-not-allowed"
+                          >
                             <span className="w-1.5 h-1.5 bg-white rotate-45 group-hover/btn:scale-150 transition-transform" />
-                            සුබ පැතුම් යවන්න
+                            {wishStatus === "loading" ? "යවමින් පවතී..." : wishStatus === "success" ? "සාර්ථකයි!" : "සුබ පැතුම් යවන්න"}
                             <span className="w-1.5 h-1.5 bg-white rotate-45 group-hover/btn:scale-150 transition-transform" />
                           </button>
                         </div>
@@ -969,7 +1087,7 @@ export default function WeddingInvitation() {
               {/* Footer */}
               <footer className="py-12 border-t border-theme-200/30 text-center relative z-10 space-y-3">
                 <p className="text-[8px] md:text-[10px] uppercase tracking-[0.5em] text-stone-400 font-bold">
-                  © {INVITE.footer.year} {INVITE.couple.display}. <span className="hidden md:inline">|</span><br className="md:hidden block mt-2" /> All rights reserved.
+                  © {INVITE.footer.year} {INVITE.couple.display}. <span className="hidden md:inline">|</span><br className="md:hidden block mt-2" /> සියලු හිමිකම් ඇවිරිණි.
                 </p>
 
               </footer>
