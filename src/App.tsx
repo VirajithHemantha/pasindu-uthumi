@@ -484,7 +484,7 @@ export default function WeddingInvitation() {
               <motion.div
                 whileHover={{ scale: 1.1, rotate: -6 }}
                 whileTap={{ scale: 0.9 }}
-                className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-40 w-28 h-28 rounded-full bg-gradient-to-br from-theme-200 via-[#fff5fb] to-theme-300 shadow-[0_20px_45px_-10px_rgba(131,63,105,0.65)] border-[5px] border-[#432f3f] flex items-center justify-center group-hover:shadow-theme-500/40"
+                className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-40 w-28 h-28 rounded-full bg-gradient-to-br from-theme-200 via-[#fff5fb] to-theme-300 shadow-[0_20px_45px_-10px_rgba(131,63,105,0.65)] border-[5px] border-white flex items-center justify-center group-hover:shadow-theme-500/40"
               >
                 <div className="absolute inset-1.5 rounded-full border border-theme-400/50" />
                 <div className="absolute inset-3 rounded-full border border-theme-500/30" />
