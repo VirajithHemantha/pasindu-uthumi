@@ -1,10 +1,10 @@
 import React, { useEffect, useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Sparkles, MapPin, Calendar, Clock, Volume2, VolumeX } from "lucide-react";
+import { Sparkles, MapPin, Calendar, Clock, Volume2, VolumeX, Heart } from "lucide-react";
 
 /**
  * Premium Sri Lankan Wedding Invitation Theme
- * Names: Denuwan & Subodha
+ * Names: Denuwan and Subodha
  * Background: Cream/Sand
  * Accents: Green/Brown
  */
@@ -18,7 +18,7 @@ const INVITE = {
     second: "උතුමි",
     display: "පසිඳු සහ උතුමි",
     displayUpper: "පසිඳු සහ උතුමි",
-    monogram: "P&U",
+    monogram: "P U",
   },
   hero: {
     saveTheDateMonth: "සැප්තැම්බර් 13, 2026",
@@ -128,12 +128,12 @@ function FloatingPetals({ disabled = false }: { disabled?: boolean }) {
       return;
     }
 
-    const colors = ["#f3ccca", "#eaada9", "#df847f", "#fcf4f3"];
-    const petalCount = isMobile ? 10 : 18;
+    const colors = ["#c93e37", "#ba322c", "#df847f", "#9b2823"]; // Bolder, darker reds for better visibility
+    const petalCount = isMobile ? 12 : 22; // Slightly more petals
     const newPetals = Array.from({ length: petalCount }).map((_, i) => ({
       id: i,
       x: Math.random() * 100,
-      size: Math.random() * 7 + 7,
+      size: Math.random() * 12 + 14, // Larger size: 14 to 26
       rotation: Math.random() * 360,
       duration: Math.random() * 11 + 16,
       delay: Math.random() * 20,
@@ -488,10 +488,8 @@ export default function WeddingInvitation() {
               >
                 <div className="absolute inset-1.5 rounded-full border border-theme-400/50" />
                 <div className="absolute inset-3 rounded-full border border-theme-500/30" />
-                <div className="text-center relative z-10">
-                  <p className="font-cinzel text-[1.7rem] font-bold text-stone-800 leading-none">{INVITE.couple.monogram}</p>
-                  <div className="h-px w-12 bg-stone-400 mx-auto my-1.5" />
-                  <p className="text-[8px] uppercase tracking-[0.35em] font-bold text-stone-600">විවෘත කරන්න</p>
+                <div className="text-center relative z-10 flex items-center justify-center">
+                  <Heart className="w-12 h-12 text-theme-900 fill-theme-800/90 drop-shadow-md" />
                 </div>
               </motion.div>
 
@@ -556,17 +554,31 @@ export default function WeddingInvitation() {
                 transition={{ duration: 1.2, delay: 0.2, ease: [0.25, 1, 0.5, 1] }}
                 className="relative z-10 w-full max-w-[420px] min-h-[500px] h-[85vh] md:h-[80vh] bg-[#ffffff] rounded-t-full shadow-[0_20px_60px_-15px_rgba(0,0,0,0.08)] border border-theme-100 flex flex-col items-center overflow-hidden p-6 pt-12 md:p-10 md:pt-16"
               >
-                {/* Arch outline decoration */}
-                <div className="absolute inset-3 sm:inset-5 border-[0.5px] border-theme-400/40 rounded-t-full pointer-events-none" />
-                <div className="absolute inset-4 sm:inset-6 border border-theme-200/40 rounded-t-full pointer-events-none" />
+                {/* Background Watermark inside the Arch */}
+                <div className="absolute inset-0 pointer-events-none z-0">
+                  <img src={brideGroomImage} alt="" className="w-full h-full object-cover opacity-[0.15] mix-blend-multiply" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-white via-white/80 to-white/20" />
+                </div>
 
-                <motion.img
+                {/* Arch outline decoration */}
+                <div className="absolute inset-3 sm:inset-5 border-[0.5px] border-theme-400/40 rounded-t-full pointer-events-none z-20" />
+                <div className="absolute inset-4 sm:inset-6 border border-theme-200/40 rounded-t-full pointer-events-none z-20" />
+
+                <motion.div
                   initial={{ rotate: -45, opacity: 0 }}
-                  animate={{ rotate: 0, opacity: 0.4 }}
+                  animate={{ rotate: 0, opacity: 0.85 }}
                   transition={{ duration: 1.5, delay: 0.5, type: "spring" }}
-                  src={mandalaImage}
-                  className="w-24 h-24 md:w-32 md:h-32 object-contain mix-blend-multiply mb-6 drop-shadow-sm opacity-60"
-                  alt=""
+                  className="w-24 h-24 md:w-32 md:h-32 mb-6 drop-shadow-md bg-theme-800"
+                  style={{
+                    WebkitMaskImage: `url(${mandalaImage})`,
+                    WebkitMaskSize: "contain",
+                    WebkitMaskRepeat: "no-repeat",
+                    WebkitMaskPosition: "center",
+                    maskImage: `url(${mandalaImage})`,
+                    maskSize: "contain",
+                    maskRepeat: "no-repeat",
+                    maskPosition: "center",
+                  }}
                 />
 
                 <div className="flex flex-col items-center text-center space-y-4 flex-1 w-full relative z-10">
@@ -589,14 +601,7 @@ export default function WeddingInvitation() {
                     >
                       {INVITE.couple.first}
                     </motion.h1>
-                    <motion.div
-                      initial={{ scale: 0 }}
-                      animate={{ scale: 1 }}
-                      transition={{ delay: 1.2, duration: 0.5 }}
-                      className="font-playball text-3xl md:text-5xl text-theme-500 italic font-light my-2 md:my-4 tracking-widest"
-                    >
-                      &
-                    </motion.div>
+
                     <motion.h1
                       initial={{ opacity: 0, x: 20 }}
                       animate={{ opacity: 1, x: 0 }}
@@ -660,9 +665,7 @@ export default function WeddingInvitation() {
                     ආදරෙන් ආරාධනා
                   </div>
 
-                  <p className="text-theme-700 text-[12px] md:text-[14px] tracking-[0.4em] md:tracking-[0.6em] uppercase font-bold text-center leading-loose">
-                    මෙම ආදරණීය විවාහ ගිවිසගැනීමේ උත්සවයට<br className="hidden md:block" /> ආදරයෙන් ආරාධනා කරමු
-                  </p>
+                  
                 </motion.div>
 
                 <motion.div
@@ -699,7 +702,7 @@ export default function WeddingInvitation() {
                         <p className="text-[7px] md:text-[8px] uppercase tracking-[0.4em] font-bold text-stone-400">ආදරණීය දියණිය</p>
                         <p className="text-xs md:text-sm font-cinzel text-stone-600 tracking-wide leading-relaxed">
                           {INVITE.bride.parentsLine1}
-                          <br />& {INVITE.bride.parentsLine2}
+                          <br />{INVITE.bride.parentsLine2}
                         </p>
                       </div>
                       <h3 className="text-5xl md:text-7xl font-playball text-theme-800 group-hover:scale-110 transition-transform duration-700 pt-6 drop-shadow-sm">{INVITE.bride.name}</h3>
@@ -716,7 +719,7 @@ export default function WeddingInvitation() {
                       transition={{ delay: 0.3, type: "spring", stiffness: 100 }}
                       className="w-16 h-16 md:w-24 md:h-24 bg-gradient-to-br from-theme-500 to-theme-700 rounded-full flex items-center justify-center shadow-xl shadow-theme-900/20 border-4 border-[#fdfaf5]"
                     >
-                      <span className="text-3xl md:text-5xl font-playball text-white md:-mt-1 drop-shadow-md">&</span>
+                      <Heart className="w-8 h-8 md:w-12 md:h-12 text-white fill-white md:-mt-1 drop-shadow-md" />
                     </motion.div>
                     <div className="hidden md:block w-px h-32 bg-gradient-to-b from-theme-300 to-transparent" />
                   </div>
@@ -733,10 +736,10 @@ export default function WeddingInvitation() {
                     <div className="absolute inset-0 opacity-[0.02] paper-grain pointer-events-none" />
                     <div className="relative z-10 space-y-4 py-8 md:py-12">
                       <div className="space-y-2">
-                        <p className="text-[7px] md:text-[8px] uppercase tracking-[0.4em] font-bold text-stone-400">ආදරණීය පුත්‍රයා</p>
+                        <p className="text-[7px] md:text-[8px] uppercase tracking-[0.4em] font-bold text-stone-400">ආදරණීය පුතුණුවන්</p>
                         <p className="text-xs md:text-sm font-cinzel text-stone-600 tracking-wide leading-relaxed">
                           {INVITE.groom.parentsLine1}
-                          <br />& {INVITE.groom.parentsLine2}
+                          <br />{INVITE.groom.parentsLine2}
                         </p>
                       </div>
                       <h3 className="text-5xl md:text-7xl font-playball text-theme-800 group-hover:scale-110 transition-transform duration-700 pt-6 drop-shadow-sm">{INVITE.groom.name}</h3>
@@ -744,7 +747,7 @@ export default function WeddingInvitation() {
                   </motion.div>
                 </div>
 
-                {/* Date & Time Luxury Layout */}
+                {/* Date and Time Luxury Layout */}
                 <motion.div
                   initial={{ opacity: 0, y: 30 }}
                   whileInView={{ opacity: 1, y: 0 }}
@@ -799,10 +802,7 @@ export default function WeddingInvitation() {
                   viewport={{ once: true }}
                   className="relative w-full flex flex-col items-center"
                 >
-                  {/* Watermark text */}
-                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 font-playball text-[12vw] md:text-[140px] text-theme-100/50 whitespace-nowrap pointer-events-none z-0 select-none">
-                    සදහටම
-                  </div>
+
 
                   <div className="flex items-center gap-4 md:gap-8 justify-center relative z-10 w-full mb-6 mt-4 opacity-70">
                     <div className="h-px w-16 md:w-32 bg-gradient-to-r from-transparent to-theme-400" />
@@ -861,9 +861,7 @@ export default function WeddingInvitation() {
                         </p>
                       </div>
 
-                      <div className="pl-8 space-y-4 pt-4 text-stone-500 text-sm md:text-base tracking-wide font-light leading-relaxed">
-                        {INVITE.venue.blurb}
-                      </div>
+
                     </div>
 
                     <div className="pt-8 w-full md:w-auto">
@@ -1064,11 +1062,12 @@ export default function WeddingInvitation() {
                     </div>
 
                     <div className="mt-32 md:mt-48 space-y-6 flex flex-col items-center relative w-full">
-                      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 font-playball text-[22vw] md:text-[220px] text-theme-100/40 whitespace-nowrap pointer-events-none z-0 select-none">
-                        ස්තූතියි
-                      </div>
+
                       <p className="text-[9px] md:text-[11px] tracking-[0.4em] text-theme-600 font-bold relative z-10 bg-[#fdfaf5] px-6 py-2 rounded-full border border-theme-100/50 shadow-sm">ආදරයෙන්</p>
-                      <h3 className="font-playball text-[3.2rem] sm:text-6xl md:text-8xl text-theme-900 relative z-10 drop-shadow-sm px-4 pt-4 leading-none">{INVITE.couple.display}</h3>
+                      <p className="text-theme-700 text-[12px] md:text-[14px] tracking-[0.4em] md:tracking-[0.6em] uppercase font-bold text-center leading-loose mt-4 mb-2">
+                        මෙම ආදරණීය විවාහ ගිවිසගැනීමේ උත්සවයට<br className="hidden md:block" /> ආදරයෙන් ආරාධනා කරමු
+                      </p>
+                      <h3 className="font-playball text-[3.2rem] sm:text-6xl md:text-8xl text-theme-900 relative z-10 drop-shadow-sm px-4 pt-2 leading-none">{INVITE.couple.display}</h3>
 
                       <motion.img
                         initial={{ opacity: 0, y: 24, scale: 0.95 }}
