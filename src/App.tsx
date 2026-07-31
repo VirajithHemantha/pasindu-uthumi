@@ -1063,7 +1063,7 @@ export default function WeddingInvitation() {
 
                     <div className="mt-32 md:mt-48 space-y-6 flex flex-col items-center relative w-full">
 
-                      <p className="text-[9px] md:text-[11px] tracking-[0.4em] text-theme-600 font-bold relative z-10 bg-[#fdfaf5] px-6 py-2 rounded-full border border-theme-100/50 shadow-sm">ආදරයෙන්</p>
+
                       <p className="text-theme-700 text-[12px] md:text-[14px] tracking-[0.4em] md:tracking-[0.6em] uppercase font-bold text-center leading-loose mt-4 mb-2">
                         මෙම ආදරණීය විවාහ ගිවිසගැනීමේ උත්සවයට<br className="hidden md:block" /> ආදරයෙන් ආරාධනා කරමු
                       </p>
