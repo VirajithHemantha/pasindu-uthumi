@@ -825,6 +825,49 @@ export default function WeddingInvitation() {
               </div>
             </section>
 
+            {/* Dress Code Section */}
+            <section className="cv-auto py-24 md:py-36 bg-[#fdfaf5] relative border-b border-theme-100/30 flex flex-col items-center overflow-hidden">
+              <div className="absolute inset-0 opacity-[0.03] paper-grain pointer-events-none" />
+              
+              <div className="w-full max-w-[1000px] px-4 flex flex-col items-center text-center relative z-10">
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  className="relative w-full flex flex-col items-center"
+                >
+                  <h2 className="font-playball text-[3.5rem] sm:text-[4rem] md:text-[5rem] text-theme-900 mb-6 drop-shadow-sm px-4 leading-[1.2]">
+                    එදිනට
+                  </h2>
+                  
+                  <div className="flex items-center gap-4 justify-center w-full mb-8 opacity-60">
+                    <div className="h-px w-16 md:w-24 bg-gradient-to-r from-transparent to-theme-300" />
+                    <div className="w-1.5 h-1.5 rotate-45 bg-theme-400" />
+                    <div className="h-px w-16 md:w-24 bg-gradient-to-l from-transparent to-theme-300" />
+                  </div>
+
+                  <p className="text-[12px] md:text-[14px] tracking-[0.4em] md:tracking-[0.6em] text-theme-600 font-bold mb-12">
+                    සිංහල ක්‍රමයට
+                  </p>
+                  
+                  <div className="flex flex-col md:flex-row gap-6 md:gap-10 w-full max-w-4xl justify-center items-stretch">
+                    <div className="bg-white/60 backdrop-blur-md p-8 md:p-10 rounded-[2rem] border border-theme-100 shadow-[0_20px_50px_-20px_rgba(131,63,105,0.15)] flex flex-col items-center justify-center w-full md:w-1/2 group hover:border-theme-300/50 transition-colors duration-500">
+                      <p className="text-[10px] md:text-[12px] uppercase tracking-[0.3em] text-theme-400 font-bold mb-4">පිරිමි</p>
+                      <p className="text-theme-800 text-lg md:text-2xl font-bold tracking-wide">සරම සහ කමිසය</p>
+                    </div>
+                    
+                    <div className="bg-white/60 backdrop-blur-md p-8 md:p-10 rounded-[2rem] border border-theme-100 shadow-[0_20px_50px_-20px_rgba(131,63,105,0.15)] flex flex-col items-center justify-center w-full md:w-1/2 group hover:border-theme-300/50 transition-colors duration-500">
+                      <p className="text-[10px] md:text-[12px] uppercase tracking-[0.3em] text-theme-400 font-bold mb-4">කාන්තා</p>
+                      <p className="text-theme-800 text-lg md:text-2xl font-bold tracking-wide text-center leading-relaxed">
+                        ඔසරිය, රෙද්ද හැට්ටය<br/>
+                        <span className="text-sm md:text-base font-normal mt-2 inline-block text-theme-600">(ලුංගි)</span>
+                      </p>
+                    </div>
+                  </div>
+                </motion.div>
+              </div>
+            </section>
+
             {/* Venue Location Section */}
             <section className="cv-auto py-24 md:py-36 bg-[#fdfaf5] relative overflow-hidden">
               {/* Decorative Background */}
